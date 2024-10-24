@@ -28,7 +28,7 @@ CONFIG_SCHEMA = cv.COMPONENT_SCHEMA.extend(
     {
         cv.GenerateID(): cv.declare_id(Seesaw),
     }
-).extend(i2c.i2c_device_schema(0x36))
+).extend(i2c.i2c_device_schema(0x37))
 
 async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID])
