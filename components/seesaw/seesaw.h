@@ -74,12 +74,10 @@ class Seesaw : public i2c::I2CDevice, public Component {
 
   void enable_encoder(uint8_t number);
   int32_t get_encoder_position(uint8_t number);
-  int16_t get_touch_value(uint8_t channel);
-  float get_temperature();
   void set_pinmode(uint8_t pin, uint8_t mode);
   bool digital_read(uint8_t pin);
   void set_gpio_interrupt(uint32_t pin, bool enabled);
-  void setup_neopixel();
+  void setup_neopixel(uint8_t pin);
   void color_neopixel(uint8_t r, uint8_t g, uint8_t b);
 
  protected:
@@ -88,29 +86,6 @@ class Seesaw : public i2c::I2CDevice, public Component {
   i2c::ErrorCode write32(SeesawModule mod, uint8_t reg, uint32_t value);
   i2c::ErrorCode readbuf(SeesawModule mod, uint8_t reg, uint8_t *buf, uint8_t len);
 };
-
-/*
-class SeesawGPIOPin : public GPIOPin {
- public:
-  void setup() override;
-  void pin_mode(gpio::Flags flags) override;
-  bool digital_read() override;
-  void digital_write(bool value) override;
-  std::string dump_summary() const override;
-
-  void set_parent(Seesaw *parent) { parent_ = parent; }
-  void set_pin(uint8_t pin) { pin_ = pin; }
-  void set_inverted(bool inverted) { inverted_ = inverted; }
-  void set_flags(gpio::Flags flags) { flags_ = flags; }
-  void set_interrupt_mode(MCP23XXXInterruptMode interrupt_mode) { interrupt_mode_ = interrupt_mode; }
-
- protected:
-  Seesaw *parent_;
-  uint8_t pin_;
-  bool inverted_;
-  gpio::Flags flags_;
-};
-*/
 
 }  // namespace seesaw
 }  // namespace esphome

@@ -43,21 +43,6 @@ int32_t Seesaw::get_encoder_position(uint8_t number) {
   return -value;  // make clockwise positive
 }
 
-int16_t Seesaw::get_touch_value(uint8_t channel) {
-  uint8_t buf[2];
-  if (this->readbuf(SEESAW_TOUCH, SEESAW_TOUCH_CHANNEL_OFFSET + channel, buf, 2) != i2c::ERROR_OK)
-    return -1;
-  return (buf[0] << 8) | buf[1];
-}
-
-float Seesaw::get_temperature() {
-  uint8_t buf[4];
-  if (this->readbuf(SEESAW_STATUS, SEESAW_STATUS_TEMP, buf, 4) != i2c::ERROR_OK)
-    return 0;
-  int32_t value = (buf[0] << 24) + (buf[1] << 16) + (buf[2] << 8) + buf[3];
-  return float(value) / 0x10000;
-}
-
 void Seesaw::set_pinmode(uint8_t pin, uint8_t mode) {
   uint32_t pins = 1 << pin;
   switch (mode) {
@@ -96,10 +81,10 @@ bool Seesaw::digital_read(uint8_t pin) {
   return ret & pins;
 }
 
-void Seesaw::setup_neopixel() {
+void Seesaw::setup_neopixel(uint8_t pin) {
   this->write8(SEESAW_NEOPIXEL, SEESAW_NEOPIXEL_SPEED, 1);
   this->write16(SEESAW_NEOPIXEL, SEESAW_NEOPIXEL_BUF_LENGTH, 3);
-  this->write8(SEESAW_NEOPIXEL, SEESAW_NEOPIXEL_PIN, 6);
+  this->write8(SEESAW_NEOPIXEL, SEESAW_NEOPIXEL_PIN, pin);
 }
 
 void Seesaw::color_neopixel(uint8_t r, uint8_t g, uint8_t b) {
@@ -132,18 +117,6 @@ i2c::ErrorCode Seesaw::readbuf(SeesawModule mod, uint8_t reg, uint8_t *buf, uint
     return err;
   return this->read(buf, len);
 }
-
-/*
-void SeesawGPIOPin::setup() { pin_mode(flags_); }
-void SeesawGPIOPin::pin_mode(gpio::Flags flags) { this->parent_->pin_mode(this->pin_, flags); }
-bool SeesawGPIOPin::digital_read() { return this->parent_->digital_read(this->pin_) != this->inverted_; }
-void SeesawGPIOPin::digital_write(bool value) { this->parent_->digital_write(this->pin_, value != this->inverted_); }
-std::string SeesawGPIOPin::dump_summary() const {
-  char buffer[32];
-  snprintf(buffer, sizeof(buffer), "%u via SeeSaw", pin_);
-  return buffer;
-}
-*/
 
 }  // namespace seesaw
 }  // namespace esphome

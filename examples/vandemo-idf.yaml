@@ -1,0 +1,72 @@
+esphome:
+  name: vandemo-seesaw
+  friendly_name: VanDemo Seesaw
+
+external_components:
+  - source:
+      type: local
+      path: ../components
+    components: [seesaw]
+
+esp32:
+  board: esp32-s3-devkitc-1
+  variant: esp32s3
+  framework:
+    type: esp-idf
+  flash_size: 16MB
+
+i2c:
+  sda: 43
+  scl: 44
+
+logger:
+
+seesaw:
+  - id: ss_black
+    address: 0x37
+  - id: ss_blue
+    address: 0x38
+  - id: ss_red
+    address: 0x36
+
+sensor:
+  - platform: seesaw
+    id: encoder_black
+    name: "Black Encoder"
+    seesaw_id: ss_black
+  - platform: seesaw
+    id: encoder_blue
+    name: "Blue Encoder"
+    seesaw_id: ss_blue
+  - platform: seesaw
+    id: encoder_red
+    name: "Red Encoder"
+    seesaw_id: ss_red
+
+binary_sensor:
+  - platform: seesaw
+    id: button_black
+    name: "Black Encoder Button"
+    seesaw_id: ss_black
+  - platform: seesaw
+    id: button_blue
+    name: "Blue Encoder Button"
+    seesaw_id: ss_blue
+  - platform: seesaw
+    id: button_red
+    name: "Red Encoder Button"
+    seesaw_id: ss_red
+
+light:
+  - platform: seesaw
+    id: pixel_black
+    name: "Black Encoder NeoPixel"
+    seesaw_id: ss_black
+  - platform: seesaw
+    id: pixel_blue
+    name: "Blue Encoder NeoPixel"
+    seesaw_id: ss_blue
+  - platform: seesaw
+    id: pixel_red
+    name: "Red Encoder NeoPixel"
+    seesaw_id: ss_red

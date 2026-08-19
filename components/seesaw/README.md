@@ -1,34 +1,35 @@
-# Seesaw component
+# Seesaw
 
-This component provides support for the Adafruit Seesaw platform.  Define a `seesaw` component then add components for each function you want to use.
+ESPHome component for the Adafruit seesaw rotary encoder board.
 
-Currently, the supported functions are the rotary encoder, rotary encoder button, temperature, touch, and single neopixel LED.
+Define each I2C seesaw device under `seesaw`, then reference it from the encoder sensor, button binary sensor, and NeoPixel light with `seesaw_id`.
 
-Example:
 ```yaml
 seesaw:
+  - id: ss_black
+    address: 0x37
 
 sensor:
   - platform: seesaw
-    id: encoder
-    type: encoder
-    name: "Seesaw encoder"
-  - platform: seesaw
-    id: temp
-    type: temperature
-  - platform: seesaw
-    id: touch
-    type: touch
-    pin: 5
+    name: "Black Encoder"
+    seesaw_id: ss_black
 
 binary_sensor:
   - platform: seesaw
-    id: button
-    name: "Seesaw encoder button"
+    name: "Black Encoder Button"
+    seesaw_id: ss_black
 
 light:
   - platform: seesaw
-    id: pixel
-    name: "Seesaw neopixel LED"
+    name: "Black Encoder NeoPixel"
+    seesaw_id: ss_black
 ```
 
+Optional fields:
+
+- `sensor.number`: rotary encoder number, default `0`
+- `sensor.min_value`: optional minimum published encoder value
+- `sensor.max_value`: optional maximum published encoder value
+- `binary_sensor.pin`: button pin, default `24`
+- `binary_sensor.inverted`: button active-low handling, default `true`
+- `light.pin`: NeoPixel pin, default `6`
