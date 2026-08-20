@@ -44,29 +44,47 @@ sensor:
     seesaw_id: ss_red
 
 binary_sensor:
-  - platform: seesaw
+  - platform: gpio
     id: button_black
     name: "Black Encoder Button"
-    seesaw_id: ss_black
-  - platform: seesaw
+    pin:
+      seesaw: ss_black
+      number: 24
+      mode: input_pullup
+      inverted: true
+  - platform: gpio
     id: button_blue
     name: "Blue Encoder Button"
-    seesaw_id: ss_blue
-  - platform: seesaw
+    pin:
+      seesaw: ss_blue
+      number: 24
+      mode: input_pullup
+      inverted: true
+  - platform: gpio
     id: button_red
     name: "Red Encoder Button"
-    seesaw_id: ss_red
+    pin:
+      seesaw: ss_red
+      number: 24
+      mode: input_pullup
+      inverted: true
 
 light:
   - platform: seesaw
     id: pixel_black
     name: "Black Encoder NeoPixel"
     seesaw_id: ss_black
+    pin: 6
+    num_leds: 1
   - platform: seesaw
     id: pixel_blue
     name: "Blue Encoder NeoPixel"
     seesaw_id: ss_blue
+    pin: 6
+    num_leds: 1
   - platform: seesaw
     id: pixel_red
     name: "Red Encoder NeoPixel"
     seesaw_id: ss_red
+    pin: 6
+    num_leds: 1

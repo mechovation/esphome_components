@@ -1,0 +1,50 @@
+esphome:
+  name: seesaw-test
+  friendly_name: Seesaw Test
+
+external_components:
+  - source:
+      type: local
+      path: ../components
+    components: [seesaw]
+
+esp32:
+  board: esp32-s3-devkitc-1
+  variant: esp32s3
+  framework:
+    type: esp-idf
+
+i2c:
+  sda: GPIO8
+  scl: GPIO9
+  frequency: 100kHz
+
+logger:
+
+seesaw:
+  - id: encoder_ss
+    address: 0x39
+
+sensor:
+  - platform: seesaw
+    id: encoder_position
+    name: "Encoder Position"
+    seesaw_id: encoder_ss
+
+binary_sensor:
+  - platform: gpio
+    id: encoder_button
+    name: "Encoder Button"
+    pin:
+      seesaw: encoder_ss
+      number: 24
+      mode: input_pullup
+      inverted: true
+
+light:
+  - platform: seesaw
+    id: encoder_neopixel
+    name: "Encoder NeoPixel"
+    seesaw_id: encoder_ss
+    pin: 6
+    num_leds: 1

@@ -1,16 +1,17 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import light
-from esphome.const import CONF_OUTPUT_ID, CONF_PIN
+from esphome.const import CONF_NUM_LEDS, CONF_OUTPUT_ID, CONF_PIN
 
 from . import CONF_SEESAW_ID, Seesaw, seesaw_ns
 
-SeesawNeopixel = seesaw_ns.class_("SeesawNeopixel", light.LightOutput, cg.Component)
+SeesawNeopixel = seesaw_ns.class_("SeesawNeopixel", light.AddressableLight)
 
-CONFIG_SCHEMA = light.light_schema(SeesawNeopixel, light.LightType.RGB).extend(
+CONFIG_SCHEMA = light.light_schema(SeesawNeopixel, light.LightType.ADDRESSABLE).extend(
     {
         cv.GenerateID(CONF_SEESAW_ID): cv.use_id(Seesaw),
         cv.Optional(CONF_PIN, default=6): cv.int_range(min=0, max=31),
+        cv.Optional(CONF_NUM_LEDS, default=1): cv.positive_not_null_int,
     }
 )
 
@@ -23,3 +24,4 @@ async def to_code(config):
     seesaw = await cg.get_variable(config[CONF_SEESAW_ID])
     cg.add(var.set_parent(seesaw))
     cg.add(var.set_pin(config[CONF_PIN]))
+    cg.add(var.set_num_leds(config[CONF_NUM_LEDS]))

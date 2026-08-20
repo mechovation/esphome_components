@@ -1,6 +1,7 @@
 #pragma once
 
 #include "esphome/core/component.h"
+#include "esphome/core/hal.h"
 #include "esphome/components/i2c/i2c.h"
 
 namespace esphome {
@@ -20,6 +21,8 @@ enum SeesawModule : uint8_t {
   SEESAW_TOUCH = 0x0F,
   SEESAW_KEYPAD = 0x10,
   SEESAW_ENCODER = 0x11,
+  SEESAW_SPECTRUM = 0x12,
+  SEESAW_SOIL = 0x13,
 };
 
 enum : uint8_t {
@@ -69,6 +72,7 @@ enum : uint8_t {
 class Seesaw : public i2c::I2CDevice, public Component {
  public:
   void setup() override;
+  void dump_config() override;
 
   float get_setup_priority() const override;
 
@@ -76,15 +80,41 @@ class Seesaw : public i2c::I2CDevice, public Component {
   int32_t get_encoder_position(uint8_t number);
   void set_pinmode(uint8_t pin, uint8_t mode);
   bool digital_read(uint8_t pin);
+  void digital_write(uint8_t pin, bool state);
   void set_gpio_interrupt(uint32_t pin, bool enabled);
-  void setup_neopixel(uint8_t pin);
-  void color_neopixel(uint8_t r, uint8_t g, uint8_t b);
+  void setup_neopixel(uint8_t pin, uint16_t num_leds);
+  void color_neopixel(uint16_t n, uint8_t r, uint8_t g, uint8_t b);
+  void update_neopixel();
 
  protected:
   i2c::ErrorCode write8(SeesawModule mod, uint8_t reg, uint8_t value);
   i2c::ErrorCode write16(SeesawModule mod, uint8_t reg, uint16_t value);
   i2c::ErrorCode write32(SeesawModule mod, uint8_t reg, uint32_t value);
-  i2c::ErrorCode readbuf(SeesawModule mod, uint8_t reg, uint8_t *buf, uint8_t len);
+  i2c::ErrorCode readbuf(SeesawModule mod, uint8_t reg, uint8_t *buf, uint8_t len, int wait = 0);
+
+  uint8_t cpuid_{0};
+  uint32_t version_{0};
+  uint32_t options_{0};
+};
+
+class SeesawGPIOPin : public GPIOPin {
+ public:
+  void setup() override;
+  void pin_mode(gpio::Flags flags) override;
+  bool digital_read() override;
+  void digital_write(bool value) override;
+  size_t dump_summary(char *buffer, size_t len) const override;
+  void set_parent(Seesaw *parent) { parent_ = parent; }
+  void set_pin(uint8_t pin) { pin_ = pin; }
+  void set_inverted(bool inverted) { inverted_ = inverted; }
+  void set_flags(gpio::Flags flags) { flags_ = flags; }
+  gpio::Flags get_flags() const override { return this->flags_; }
+
+ protected:
+  Seesaw *parent_;
+  uint8_t pin_;
+  bool inverted_;
+  gpio::Flags flags_;
 };
 
 }  // namespace seesaw

@@ -29,7 +29,7 @@ i2c:
 
 seesaw:
   - id: ss_black
-    address: 0x37
+    address: 0x39
 
 sensor:
   - platform: seesaw
@@ -37,21 +37,26 @@ sensor:
     seesaw_id: ss_black
 
 binary_sensor:
-  - platform: seesaw
+  - platform: gpio
     name: "Black Encoder Button"
-    seesaw_id: ss_black
+    pin:
+      seesaw: ss_black
+      number: 24
+      mode: input_pullup
+      inverted: true
 
 light:
   - platform: seesaw
     name: "Black Encoder NeoPixel"
     seesaw_id: ss_black
+    pin: 6
+    num_leds: 1
 ```
 
 The Adafruit rotary encoder board defaults are used when omitted:
 
 - Encoder number: `0`
-- Button pin: `24`
-- Button inverted: `true`
 - NeoPixel pin: `6`
+- NeoPixel LEDs: `1`
 
-See [examples/vandemo-idf.yaml](examples/vandemo-idf.yaml) for a three-encoder ESP32-S3 example.
+Use ESPHome's `gpio` binary sensor platform with a `seesaw` pin for the encoder button. See [examples/seesaw-esp32s3-idf.yaml](examples/seesaw-esp32s3-idf.yaml) for a minimal ESP32-S3 ESP-IDF example.
